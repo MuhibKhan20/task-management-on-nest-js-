@@ -1,0 +1,17 @@
+[phases.setup]
+nixPkgs = ["nodejs_18", "npm-9_x"]
+
+[phases.install]
+cmds = [
+  "npm install",
+  "cd apps/frontend && npm install"
+]
+
+[phases.build]
+cmds = [
+  "npx prisma generate",
+  "npm run build:all"
+]
+
+[start]
+cmd = "npm run start:prod"

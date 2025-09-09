@@ -16,7 +16,7 @@ async function createNestServer() {
     );
     
     app.enableCors({
-      origin: ['http://localhost:5173', 'https://task-manager-0d77.onrender.com', /\.vercel\.app$/, /localhost:\d+/],
+      origin: ['http://localhost:5173', 'https://task-manager-0d77.onrender.com', /\.vercel\.app$/, /\.railway\.app$/, /localhost:\d+/],
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
       credentials: true,
     });
@@ -44,7 +44,7 @@ export default async function handler(req: any, res: any) {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://task-manager-0d77.onrender.com', /\.vercel\.app$/, /localhost:\d+/],
+    origin: ['http://localhost:5173', 'https://task-manager-0d77.onrender.com', /\.vercel\.app$/, /\.railway\.app$/, /localhost:\d+/],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   });
