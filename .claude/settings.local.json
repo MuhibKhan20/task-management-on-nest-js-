@@ -15,7 +15,10 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(npx prisma migrate status:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(timeout 30s npx tsc --noEmit)"
     ],
     "deny": [],
     "ask": []
