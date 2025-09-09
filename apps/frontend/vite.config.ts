@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:4000', // Nest.js backend
+        target: 'http://localhost:4001', // Nest.js backend
         changeOrigin: true,
       },
     },
