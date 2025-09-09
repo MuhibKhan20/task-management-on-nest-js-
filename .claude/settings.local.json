@@ -14,7 +14,8 @@
       "Bash(git commit:*)",
       "Bash(git branch:*)",
       "Bash(git push:*)",
-      "Bash(npx prisma migrate status:*)"
+      "Bash(npx prisma migrate status:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
