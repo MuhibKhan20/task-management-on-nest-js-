@@ -4,7 +4,7 @@
   },
   "scripts": {
     "dev": "turbo run dev",
-    "build": "cd apps/backend && npm run vercel-build && cd ../frontend && npm run build",
+    "build": "npm install --prefix=apps/backend && npm install --prefix=apps/frontend && cd apps/backend && npm run vercel-build && cd ../frontend && npm run build",
     "start": "node apps/backend/dist/main"
   },
   "workspaces": [
