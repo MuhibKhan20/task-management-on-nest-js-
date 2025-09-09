@@ -1,28 +1,19 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "apps/frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    },
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+  "buildCommand": "npm install --prefix=apps/frontend && cd apps/frontend && npm run build && npm run vercel-build",
+  "outputDirectory": "apps/frontend/dist",
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs18.x"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/index.js"
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "apps/frontend/dist/index.html"
+      "dest": "/index.html"
     }
-  ],
-  "installCommand": "npm install && npm install --prefix=apps/frontend",
-  "buildCommand": "npm run vercel-build && cd apps/frontend && npm run build"
+  ]
 }
