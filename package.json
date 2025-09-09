@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "cd apps/frontend && npm install && npm run build && cd .. && prisma generate && nest build",
-    "build:all": "cd apps/frontend && npm run build && cd .. && npx prisma generate && nest build",
+    "build:all": "cd apps/frontend && npm run build && cd .. && npx prisma generate --schema=prisma/schema.prisma && nest build",
     "vercel-build": "npx prisma generate --schema=./prisma/schema.prisma && npx prisma migrate deploy --schema=./prisma/schema.prisma && nest build",
-    "start:prod": "npx prisma migrate deploy --schema=./prisma/schema.prisma && node dist/main.js",
+    "start:prod": "npx prisma migrate deploy --schema=prisma/schema.prisma && node dist/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch --preserveWatchOutput",
