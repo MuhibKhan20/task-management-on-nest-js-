@@ -27,6 +27,9 @@
     "react-hook-form": "^7.51.0",
     "react-router-dom": "^6.22.3",
     "react-toastify": "^10.0.5",
+    "chart.js": "^4.5.0",
+    "react-chartjs-2": "^5.3.0",
+    "superagent": "^9.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
