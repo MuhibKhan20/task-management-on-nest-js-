@@ -3,8 +3,9 @@ services:
   - type: web
     name: task-manager-backend
     env: node
-    buildCommand: cd apps/backend && npm install && npm run build
-    startCommand: cd apps/backend && npm run start:prod
+    rootDir: apps/backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
     envVars:
       - key: DATABASE_URL
         value: postgresql://neondb_owner:npg_RHla59uWQwNi@ep-odd-field-adzn4f51-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&pgbouncer=true&connection_limit=10&pool_timeout=20
@@ -18,14 +19,13 @@ services:
         value: 3600
       - key: JWT_REFRESH_TOKEN_TTL
         value: 604800
-      - key: PORT
-        value: 10000
 
-  # Frontend Static Site
+  # Frontend Static Site  
   - type: static
     name: task-manager-frontend
-    buildCommand: cd apps/frontend && npm install && npm run build
-    staticPublishPath: apps/frontend/dist
+    rootDir: apps/frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
         value: https://task-manager-backend.onrender.com
