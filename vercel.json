@@ -1,11 +1,27 @@
 {
-  "buildCommand": "cd apps/frontend && npm install && npm run build",
-  "outputDirectory": "apps/frontend/dist",
-  "installCommand": "npm install --prefix apps/frontend",
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "apps/frontend/dist"
+      }
+    },
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
     }
-  ]
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "apps/frontend/dist/index.html"
+    }
+  ],
+  "buildCommand": "npm install --prefix=apps/frontend && cd apps/frontend && npm run build && npm run vercel-build"
 }
