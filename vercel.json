@@ -7,13 +7,12 @@
       "config": {
         "distDir": "apps/frontend/dist"
       }
+    },
+    {
+      "src": "apps/backend/dist/main.js",
+      "use": "@vercel/node"
     }
   ],
-  "functions": {
-    "apps/backend/dist/main.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "routes": [
     {
       "src": "/api/(.*)",
