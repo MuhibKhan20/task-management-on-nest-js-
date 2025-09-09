@@ -7,7 +7,7 @@ import { useDeadlineMonitor } from './hooks/useDeadlineMonitor';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-    useDeadlineMonitor();
+  useDeadlineMonitor();
 
   return (
     <>
