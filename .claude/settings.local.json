@@ -18,7 +18,9 @@
       "Bash(git pull:*)",
       "Bash(npm install:*)",
       "Bash(node:*)",
-      "Bash(timeout 30s npx tsc --noEmit)"
+      "Bash(timeout 30s npx tsc --noEmit)",
+      "Bash(npm start)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
