@@ -9,7 +9,9 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "npx prisma generate --schema=./prisma/schema.prisma",
+  "ls -la ./prisma",
+  "pwd",
+  "npx prisma generate",
   "npm run build:all"
 ]
 
