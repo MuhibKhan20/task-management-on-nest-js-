@@ -12,4 +12,17 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Ensure _redirects file is copied to dist
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === '_redirects') {
+            return '_redirects';
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
+      }
+    }
+  }
 });

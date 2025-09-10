@@ -1,26 +1,4 @@
 services:
-  # Backend API Service (Express.js)
-  - type: web
-    name: task-manager-backend
-    env: node
-    rootDir: backend2
-    buildCommand: npm install
-    startCommand: npm run start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DATABASE_URL
-        value: postgresql://neondb_owner:npg_RHla59uWQwNi@ep-odd-field-adzn4f51-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&pgbouncer=true&connection_limit=10&pool_timeout=20
-      - key: JWT_SECRET
-        value: cf2bacdbd5041de32a59d5ecaccf84f50cea995fe6302ad94b5a65531cd3f400
-      - key: REFRESH_JWT_SECRET
-        value: ac9966f0250dce6accf547c80f934c4f00abb45a175dd397ee7be06a51eeea61
-      - key: JWT_ACCESS_TOKEN_TTL
-        value: 3600
-      - key: JWT_REFRESH_TOKEN_TTL
-        value: 604800
-
-  # Frontend Static Site  
   - type: static
     name: task-manager-frontend
     rootDir: apps/frontend
