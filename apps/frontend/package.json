@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "vercel-build": "vite build",
+    "build": "vite build && npm run copy-redirects",
+    "copy-redirects": "cp public/_redirects dist/_redirects || copy public\\_redirects dist\\_redirects",
+    "vercel-build": "vite build && npm run copy-redirects",
     "type-check": "tsc",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
