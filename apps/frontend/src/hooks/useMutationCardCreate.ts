@@ -10,7 +10,9 @@ import { toast } from 'react-toastify';
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required').trim(),
   description: z.string().min(1, 'Description is required').trim(),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH'])
+  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']),
+  status: z.enum(['TODO', 'DONE']).default('TODO'),
+  deadline: z.string().optional()
 });
 
 type formType = z.infer<typeof formSchema>;
@@ -21,6 +23,8 @@ type useMutationCardCreateProps = {
     title: string;
     description: string;
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
+    status: 'TODO' | 'DONE';
+    deadline?: string;
   }>;
   workspaceId: string | undefined;
   listId: string | undefined;
@@ -71,7 +75,9 @@ const useMutationCardCreate = ({
       reset({
         title: '',
         description: '',
-        priority: 'LOW'
+        priority: 'LOW',
+        status: 'TODO',
+        deadline: ''
       });
       toggleModal();
       // Invalidate and refetch
@@ -94,7 +100,9 @@ const useMutationCardCreate = ({
         body: JSON.stringify({
           title: data.title,
           description: data.description,
-          priority: data.priority
+          priority: data.priority,
+          status: data.status,
+          deadline: data.deadline
         })
       }
     );

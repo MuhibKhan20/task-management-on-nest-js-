@@ -30,12 +30,7 @@ const adminFormSchema = z.object({
   deadline: z.string().optional()
 });
 
-const userFormSchema = z.object({
-  status: z.enum(['TODO', 'DONE'])
-});
-
 type AdminFormType = z.infer<typeof adminFormSchema>;
-type UserFormType = z.infer<typeof userFormSchema>;
 
 
 type CardModalUpdateProps = {
@@ -53,30 +48,26 @@ const CardModalUpdate = ({
   listId,
   card
 }: CardModalUpdateProps) => {
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const {
     control,
     handleSubmit,
     formState: { errors }
-  } = useForm<AdminFormType | UserFormType>({
-    resolver: zodResolver(isAdmin ? adminFormSchema : userFormSchema),
-    defaultValues: isAdmin ? {
-      title: card?.title,
-      description: card?.description,
-      priority: card?.priority,
-      status: card?.status,
-      deadline: card?.deadline ? new Date(card.deadline).toISOString().slice(0, 16) : ''
-    } : {
-      status: card?.status
-    },
-    values: isAdmin ? {
+  } = useForm<AdminFormType>({
+    resolver: zodResolver(adminFormSchema),
+    defaultValues: {
       title: card?.title ?? '',
       description: card?.description ?? '',
       priority: card?.priority ?? 'LOW',
       status: card?.status ?? 'TODO',
       deadline: card?.deadline ? new Date(card.deadline).toISOString().slice(0, 16) : ''
-    } : {
-      status: card?.status ?? 'TODO'
+    },
+    values: {
+      title: card?.title ?? '',
+      description: card?.description ?? '',
+      priority: card?.priority ?? 'LOW',
+      status: card?.status ?? 'TODO',
+      deadline: card?.deadline ? new Date(card.deadline).toISOString().slice(0, 16) : ''
     }
   });
 
@@ -87,7 +78,7 @@ const CardModalUpdate = ({
     cardId: card?.id
   });
 
-  const onSubmit = (data: AdminFormType | UserFormType) => {
+  const onSubmit = (data: AdminFormType) => {
     cardMutation.mutate(data);
   };
 

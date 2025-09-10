@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
 
     // Create user
     const result = await query(
-      'INSERT INTO "User" (username, email, password, role, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id, username, email, role',
+      'INSERT INTO "User" (id, username, email, password, role, "createdAt", "updatedAt") VALUES (gen_random_uuid(), $1, $2, $3, $4, NOW(), NOW()) RETURNING id, username, email, role',
       [username, email, hashedPassword, 'USER']
     );
 

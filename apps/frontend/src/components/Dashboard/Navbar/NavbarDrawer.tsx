@@ -138,13 +138,15 @@ const NavbarDrawer = ({
         </RoleBasedAccess>
       </List>
       <Divider />
-      <List component="nav" sx={{ minWidth: '6rem' }}>
+      <List sx={{ minWidth: '6rem' }}>
         {workspaces !== undefined &&
           workspaces.map((workspace) => {
             return (
               <Box key={workspace.id}>
                 <ListItemButton
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
                     handleWorkspaceClick(workspace.id);
                     openWorkspaceBtn();
                   }}
@@ -185,7 +187,11 @@ const NavbarDrawer = ({
                 >
                   <List component="div" disablePadding>
                     <ListItemButton
-                      onClick={handleBoardsClick}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleBoardsClick();
+                      }}
                       sx={{ pl: 4 }}
                       selected={
                         selectedWorkspaceMenuItem === 'boards'
@@ -197,7 +203,11 @@ const NavbarDrawer = ({
                       <ListItemText primary="Boards" />
                     </ListItemButton>
                     <ListItemButton
-                      onClick={handleActivityClick}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleActivityClick();
+                      }}
                       sx={{ pl: 4 }}
                       selected={
                         selectedWorkspaceMenuItem === 'activities'

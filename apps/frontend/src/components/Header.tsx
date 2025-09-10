@@ -3,7 +3,6 @@ import { ThemeContext } from '../context/ThemeContextProvider';
 import logoSrc from '../assets/logo.png';
 import {
   Box,
-  Link,
   Divider,
   IconButton,
   Stack,
@@ -75,10 +74,9 @@ const Header = () => {
       alignItems={'center'}
       sx={{ padding: '0.5rem' }}
     >
-      <Link
-        color="inherit"
-        underline="none"
-        href={accessToken ? '/dashboard' : '/'}
+      <Box
+        onClick={() => navigate(accessToken ? '/dashboard' : '/')}
+        sx={{ cursor: 'pointer' }}
       >
         <Stack direction={'row'} spacing={1} alignItems={'center'}>
           <Box
@@ -103,7 +101,7 @@ const Header = () => {
             Adevi's Task Manager
           </Typography>
         </Stack>
-      </Link>
+      </Box>
 
       <Stack
         direction={'row'}
@@ -113,7 +111,7 @@ const Header = () => {
         {accessToken && (
           <Tooltip title="Settings">
             <IconButton
-              href={`/profile/${userId}`}
+              onClick={() => navigate(`/profile/${userId}`)}
               aria-label="profile"
               size="medium"
               color="primary"
@@ -125,7 +123,7 @@ const Header = () => {
         {!accessToken && (
           <Tooltip title="Login">
             <IconButton
-              href="/login"
+              onClick={() => navigate('/login')}
               aria-label="login"
               size="medium"
               color="primary"

@@ -77,7 +77,9 @@ const CardModalCreate = ({
         reset({
           title: '',
           description: '',
-          priority: 'LOW'
+          priority: 'LOW',
+          status: 'TODO',
+          deadline: ''
         });
         toggleModal();
       }}
@@ -247,6 +249,7 @@ const CardModalCreate = ({
                     title: '',
                     description: '',
                     priority: 'LOW',
+                    status: 'TODO',
                     deadline: ''
                   });
                   toggleModal();

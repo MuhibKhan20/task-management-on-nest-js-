@@ -10,8 +10,8 @@ router.get('/:id', async (req, res) => {
       JOIN "List" l ON c."listId" = l.id
       JOIN "Board" b ON l."boardId" = b.id
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE c.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE c.id = $1
+    `, [req.params.id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Card not found' });
@@ -64,18 +64,11 @@ router.patch('/:id', async (req, res) => {
 
     updateFields.push(`"updatedAt" = NOW()`);
     values.push(req.params.id);
-    values.push(req.user.userId);
 
     const updateQuery = `
       UPDATE "Card" 
       SET ${updateFields.join(', ')} 
-      WHERE id = $${paramCounter++} 
-      AND "listId" IN (
-        SELECT l.id FROM "List" l
-        JOIN "Board" b ON l."boardId" = b.id
-        JOIN "Workspace" w ON b."workspaceId" = w.id
-        WHERE w."userId" = $${paramCounter++}
-      )
+      WHERE id = $${paramCounter} 
       RETURNING *
     `;
 
@@ -123,8 +116,8 @@ router.delete('/:id', async (req, res) => {
       JOIN "List" l ON c."listId" = l.id
       JOIN "Board" b ON l."boardId" = b.id
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE c.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE c.id = $1
+    `, [req.params.id]);
 
     if (cardResult.rows.length === 0) {
       return res.status(404).json({ message: 'Card not found' });

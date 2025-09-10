@@ -5,7 +5,9 @@ import {
   CardContent,
   Theme,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  CircularProgress,
+  Box
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { TList } from '../../types/list.type';
@@ -13,26 +15,47 @@ import ListMenu from './List/ListMenu';
 import ListModalCreate from './Modal/ListModalCreate';
 import CardComponent from './CardComponent';
 import Grid from '@mui/material/Unstable_Grid2';
+import useQueryAllByItemId from '../../hooks/useQueryAllByItemId';
 
 type ListComponentProps = {
   workspaceId: string | undefined;
   boardId: string | undefined;
-  lists: TList[] | undefined;
 };
 
 const ListComponent = ({
   workspaceId,
-  boardId,
-  lists
+  boardId
 }: ListComponentProps) => {
   const matches = useMediaQuery<Theme>((theme) =>
     theme.breakpoints.up('sm')
   );
   const [openCreateModal, setOpenCreateModal] = useState(false);
 
+  // Fetch lists for this board
+  const { data: lists, isPending: isLoadingLists } = useQueryAllByItemId<TList[]>(
+    'lists',
+    `${import.meta.env.VITE_API_BOARDS}`,
+    boardId
+  );
+
   const toggleCreateModal = () => {
     setOpenCreateModal((prevVal) => !prevVal);
   };
+
+  if (isLoadingLists) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '200px'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Grid

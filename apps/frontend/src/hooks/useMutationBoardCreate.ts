@@ -6,6 +6,7 @@ import submitActivity from '../lib/submitActivity';
 import { TBoard } from '../types/board.type';
 import refreshTokenHandler from '../lib/refreshTokenHandler';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Board is required').trim(),
@@ -29,6 +30,7 @@ const useMutationBoardCreate = ({
   selectedWorkspaceId
 }: useMutationBoardCreateProps) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { accessToken, refreshToken, setToken, clearToken } =
     useAuth();
 
@@ -76,6 +78,8 @@ const useMutationBoardCreate = ({
       queryClient.invalidateQueries({
         queryKey: ['activities', selectedWorkspaceId]
       });
+      // Navigate to the newly created board
+      navigate(`/boards/${data.id}`);
     }
   });
 

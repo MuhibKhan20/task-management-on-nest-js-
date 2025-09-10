@@ -7,7 +7,6 @@ import {
   Chip,
   Grid,
   Skeleton,
-  IconButton,
 } from '@mui/material';
 import { grey, green, lightBlue, red, orange } from '@mui/material/colors';
 import { alpha } from '@mui/material/styles';
@@ -38,6 +37,9 @@ type BoardCardProps = {
 
 const BoardCard = ({ board, onClick }: BoardCardProps) => {
   const { data: stats, isLoading, isError } = useBoardStatistics(board.id);
+  
+  // Debug logging
+  console.log('BoardCard stats:', stats, 'isLoading:', isLoading, 'isError:', isError);
 
   const getBoardColor = () => {
     switch (board.color) {
@@ -73,11 +75,18 @@ const BoardCard = ({ board, onClick }: BoardCardProps) => {
   const getPriorityChartData = () => {
     if (!stats) return null;
     
+    // Safely access priorityBreakdown with fallbacks
+    const priorityBreakdown = stats.priorityBreakdown || { high: 0, medium: 0, low: 0 };
+    
     return {
       labels: ['High', 'Medium', 'Low'],
       datasets: [
         {
-          data: [stats.priorityBreakdown.high, stats.priorityBreakdown.medium, stats.priorityBreakdown.low],
+          data: [
+            priorityBreakdown.high || 0, 
+            priorityBreakdown.medium || 0, 
+            priorityBreakdown.low || 0
+          ],
           backgroundColor: [red[400], orange[400], green[400]],
           borderRadius: 4,
         },

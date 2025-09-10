@@ -89,7 +89,8 @@ const LoginPage = () => {
       }
     } catch (error) {
       setError(true);
-      setErrorText('An unexpected error is occured');
+      console.error('Login error:', error);
+      setErrorText(`Network error: ${error instanceof Error ? error.message : 'Unable to connect to server'}`);
       setSubmitting(false);
     }
   };

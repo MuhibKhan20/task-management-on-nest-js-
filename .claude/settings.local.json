@@ -20,7 +20,15 @@
       "Bash(node:*)",
       "Bash(timeout 30s npx tsc --noEmit)",
       "Bash(npm start)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git checkout:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c:*)",
+      "Bash(timeout:*)",
+      "Bash(WORKSPACE_ID=\"f50a05f5-196e-4526-80fb-0041cc540649\")",
+      "Bash(BOARD_ID=\"937e5f8a-2c9d-4f29-8dec-8508cf2e6fcc\")",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []

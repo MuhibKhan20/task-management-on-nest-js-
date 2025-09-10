@@ -6,7 +6,7 @@ const NOTIFICATION_CHECK_INTERVAL = 60000; // Check every minute
 
 export const useDeadlineMonitor = () => {
   const { checkDeadlines } = useNotifications();
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchAllUserCards = useCallback(async (): Promise<TCard[]> => {
     try {

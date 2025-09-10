@@ -5,10 +5,18 @@ const router = express.Router();
 // Get all workspaces for user
 router.get('/', async (req, res) => {
   try {
-    const result = await query(
-      'SELECT * FROM "Workspace" WHERE "userId" = $1 ORDER BY "createdAt" DESC',
-      [req.user.userId]
-    );
+    let result;
+    if (req.user.role === 'admin') {
+      // Admins can see all workspaces
+      result = await query(
+        'SELECT * FROM "Workspace" ORDER BY "createdAt" DESC'
+      );
+    } else {
+      // Regular users can see all workspaces (since admins create them for users to work on)
+      result = await query(
+        'SELECT * FROM "Workspace" ORDER BY "createdAt" DESC'
+      );
+    }
     res.json(result.rows);
   } catch (error) {
     console.error('Get workspaces error:', error);
@@ -46,10 +54,20 @@ router.post('/', async (req, res) => {
 // Get workspace by ID
 router.get('/:id', async (req, res) => {
   try {
-    const result = await query(
-      'SELECT * FROM "Workspace" WHERE id = $1 AND "userId" = $2',
-      [req.params.id, req.user.userId]
-    );
+    let result;
+    if (req.user.role === 'admin') {
+      // Admins can access any workspace
+      result = await query(
+        'SELECT * FROM "Workspace" WHERE id = $1',
+        [req.params.id]
+      );
+    } else {
+      // Regular users can access any workspace (for task management)
+      result = await query(
+        'SELECT * FROM "Workspace" WHERE id = $1',
+        [req.params.id]
+      );
+    }
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Workspace not found' });
@@ -115,10 +133,10 @@ router.delete('/:id', async (req, res) => {
 // Get boards for workspace
 router.get('/:id/boards', async (req, res) => {
   try {
-    // First check if workspace belongs to user
+    // Check if workspace exists (allow all users to access)
     const workspaceResult = await query(
-      'SELECT id FROM "Workspace" WHERE id = $1 AND "userId" = $2',
-      [req.params.id, req.user.userId]
+      'SELECT id FROM "Workspace" WHERE id = $1',
+      [req.params.id]
     );
 
     if (workspaceResult.rows.length === 0) {
@@ -146,10 +164,10 @@ router.post('/:id/boards', async (req, res) => {
       return res.status(400).json({ message: 'Title and color are required' });
     }
 
-    // Check if workspace belongs to user
+    // Check if workspace exists (allow all users to create boards)
     const workspaceResult = await query(
-      'SELECT id FROM "Workspace" WHERE id = $1 AND "userId" = $2',
-      [req.params.id, req.user.userId]
+      'SELECT id FROM "Workspace" WHERE id = $1',
+      [req.params.id]
     );
 
     if (workspaceResult.rows.length === 0) {

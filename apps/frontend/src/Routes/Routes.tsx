@@ -8,7 +8,8 @@ import {
   Route,
   RouterProvider,
   createBrowserRouter,
-  createRoutesFromElements
+  createRoutesFromElements,
+  Navigate
 } from 'react-router-dom';
 import ProtectedRoutes from './ProtectedRoutes.tsx';
 import PublicRoutes from './PublicRoutes.tsx';
@@ -31,17 +32,14 @@ const Routes = () => {
 
         {/* Routes accessible only to authenticated users  */}
         <Route
-          path="/"
           element={<ProtectedRoutes />}
           errorElement={<ErrorBoundary />}
         >
-          <Route
-            index={true}
-            path="/dashboard"
-            element={<DashboardPage />}
-          />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/boards/:boardId" element={<BoardPage />} />
+          {/* Catch-all route for authenticated users to redirect to dashboard */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </>
     )

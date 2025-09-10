@@ -9,7 +9,9 @@ import { toast } from 'react-toastify';
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required').trim(),
   description: z.string().min(1, 'Description is required').trim(),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH'])
+  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']),
+  status: z.enum(['TODO', 'DONE']).optional(),
+  deadline: z.string().optional()
 });
 
 type formType = z.infer<typeof formSchema>;
@@ -76,7 +78,7 @@ const useMutationCardUpdate = ({
     const response = await fetch(
       `${import.meta.env.VITE_API_CARDS}/${cardId}`,
       {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + token
@@ -84,7 +86,9 @@ const useMutationCardUpdate = ({
         body: JSON.stringify({
           title: data.title,
           description: data.description,
-          priority: data.priority
+          priority: data.priority,
+          ...(data.status && { status: data.status }),
+          ...(data.deadline && { deadline: data.deadline })
         })
       }
     );

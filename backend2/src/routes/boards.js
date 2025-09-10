@@ -5,12 +5,12 @@ const router = express.Router();
 // Get board by ID
 router.get('/:id', async (req, res) => {
   try {
-    // Check if user has access to this board through workspace
+    // Get board (allow all users to access)
     const result = await query(`
       SELECT b.* FROM "Board" b
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE b.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE b.id = $1
+    `, [req.params.id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Board not found' });
@@ -48,13 +48,11 @@ router.patch('/:id', async (req, res) => {
 
     updateFields.push(`"updatedAt" = NOW()`);
     values.push(req.params.id);
-    values.push(req.user.userId);
 
     const updateQuery = `
       UPDATE "Board" 
       SET ${updateFields.join(', ')} 
       WHERE id = $${paramCounter++} 
-      AND "workspaceId" IN (SELECT id FROM "Workspace" WHERE "userId" = $${paramCounter++})
       RETURNING *
     `;
 
@@ -87,8 +85,8 @@ router.delete('/:id', async (req, res) => {
     const boardResult = await query(`
       SELECT b.title, w.id as workspaceId FROM "Board" b
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE b.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE b.id = $1
+    `, [req.params.id]);
 
     if (boardResult.rows.length === 0) {
       return res.status(404).json({ message: 'Board not found' });
@@ -115,12 +113,12 @@ router.delete('/:id', async (req, res) => {
 // Get lists for board
 router.get('/:id/lists', async (req, res) => {
   try {
-    // Check if user has access to this board
+    // Check if board exists
     const boardCheck = await query(`
       SELECT 1 FROM "Board" b
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE b.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE b.id = $1
+    `, [req.params.id]);
 
     if (boardCheck.rows.length === 0) {
       return res.status(404).json({ message: 'Board not found' });
@@ -147,12 +145,12 @@ router.post('/:id/lists', async (req, res) => {
       return res.status(400).json({ message: 'Title is required' });
     }
 
-    // Check if user has access to this board
+    // Check if board exists and get workspace
     const boardCheck = await query(`
       SELECT w.id as workspaceId FROM "Board" b
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE b.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE b.id = $1
+    `, [req.params.id]);
 
     if (boardCheck.rows.length === 0) {
       return res.status(404).json({ message: 'Board not found' });
@@ -179,12 +177,12 @@ router.post('/:id/lists', async (req, res) => {
 // Get board statistics
 router.get('/:id/statistics', async (req, res) => {
   try {
-    // Check if user has access to this board
+    // Check if board exists
     const boardCheck = await query(`
       SELECT 1 FROM "Board" b
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE b.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE b.id = $1
+    `, [req.params.id]);
 
     if (boardCheck.rows.length === 0) {
       return res.status(404).json({ message: 'Board not found' });
@@ -199,13 +197,43 @@ router.get('/:id/statistics', async (req, res) => {
         COUNT(CASE WHEN c.status = 'DONE' THEN 1 END) as done_cards,
         COUNT(CASE WHEN c.priority = 'HIGH' THEN 1 END) as high_priority,
         COUNT(CASE WHEN c.priority = 'MEDIUM' THEN 1 END) as medium_priority,
-        COUNT(CASE WHEN c.priority = 'LOW' THEN 1 END) as low_priority
+        COUNT(CASE WHEN c.priority = 'LOW' THEN 1 END) as low_priority,
+        COUNT(CASE WHEN c.status = 'TODO' AND c.deadline < NOW() THEN 1 END) as overdue_cards
       FROM "List" l
       LEFT JOIN "Card" c ON l.id = c."listId"
       WHERE l."boardId" = $1
     `, [req.params.id]);
 
-    res.json(statsResult.rows[0]);
+    const stats = statsResult.rows[0];
+    const totalTasks = parseInt(stats.total_cards) || 0;
+    const completedTasks = parseInt(stats.done_cards) || 0;
+    const pendingTasks = parseInt(stats.todo_cards) || 0;
+    const overdueTasks = parseInt(stats.overdue_cards) || 0;
+    const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+    // Get board info for response
+    const boardResult = await query(`
+      SELECT id, title, color FROM "Board" WHERE id = $1
+    `, [req.params.id]);
+
+    const boardInfo = boardResult.rows[0];
+
+    res.json({
+      boardId: boardInfo.id,
+      boardTitle: boardInfo.title,
+      boardColor: boardInfo.color,
+      totalTasks,
+      completedTasks,
+      pendingTasks,
+      overdueTasks,
+      completionPercentage,
+      priorityBreakdown: {
+        high: parseInt(stats.high_priority) || 0,
+        medium: parseInt(stats.medium_priority) || 0,
+        low: parseInt(stats.low_priority) || 0
+      },
+      listsCount: parseInt(stats.lists_count) || 0
+    });
   } catch (error) {
     console.error('Get board statistics error:', error);
     res.status(500).json({ message: 'Internal server error' });

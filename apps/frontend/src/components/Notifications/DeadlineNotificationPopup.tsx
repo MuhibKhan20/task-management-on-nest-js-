@@ -27,7 +27,7 @@ const DeadlineNotificationPopup: React.FC<NotificationPopupProps> = ({ notificat
     // Auto-dismiss low priority notifications after 8 seconds
     // Medium priority after 12 seconds
     // High priority notifications stay until manually dismissed
-    let timeoutId: NodeJS.Timeout | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     if (notification.priority === 'low') {
       timeoutId = setTimeout(() => {

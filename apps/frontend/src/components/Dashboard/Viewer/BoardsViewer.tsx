@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import {
   Box,
-  Button,
   CircularProgress,
   Tooltip,
   Typography
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
-import { grey, green, lightBlue, red } from '@mui/material/colors';
-import { alpha } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import BoardModal from '../Modal/BoardModal';
 import useQueryAllByItemId from '../../../hooks/useQueryAllByItemId';
@@ -22,6 +20,7 @@ type BoardsViewerProps = {
 
 const BoardsViewer = ({ selectedWorkspaceId }: BoardsViewerProps) => {
   const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
 
   const { data: boards, isPending } = useQueryAllByItemId<TBoard[]>(
     'boards',
@@ -64,7 +63,7 @@ const BoardsViewer = ({ selectedWorkspaceId }: BoardsViewerProps) => {
                 <BoardCard
                   key={board.id}
                   board={board}
-                  onClick={() => window.location.href = `/boards/${board.id}`}
+                  onClick={() => navigate(`/boards/${board.id}`)}
                 />
               ))}
             <RoleBasedAccess allowedRoles={['ADMIN']}>

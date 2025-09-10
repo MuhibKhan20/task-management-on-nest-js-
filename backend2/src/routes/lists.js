@@ -9,8 +9,8 @@ router.get('/:id', async (req, res) => {
       SELECT l.* FROM "List" l
       JOIN "Board" b ON l."boardId" = b.id
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE l.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE l.id = $1
+    `, [req.params.id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'List not found' });
@@ -39,10 +39,9 @@ router.patch('/:id', async (req, res) => {
       AND "boardId" IN (
         SELECT b.id FROM "Board" b 
         JOIN "Workspace" w ON b."workspaceId" = w.id 
-        WHERE w."userId" = $3
       )
       RETURNING *
-    `, [title, req.params.id, req.user.userId]);
+    `, [title, req.params.id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'List not found' });
@@ -79,8 +78,8 @@ router.delete('/:id', async (req, res) => {
       FROM "List" l
       JOIN "Board" b ON l."boardId" = b.id
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE l.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE l.id = $1
+    `, [req.params.id]);
 
     if (listResult.rows.length === 0) {
       return res.status(404).json({ message: 'List not found' });
@@ -112,8 +111,8 @@ router.get('/:id/cards', async (req, res) => {
       SELECT 1 FROM "List" l
       JOIN "Board" b ON l."boardId" = b.id
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE l.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE l.id = $1
+    `, [req.params.id]);
 
     if (listCheck.rows.length === 0) {
       return res.status(404).json({ message: 'List not found' });
@@ -145,8 +144,8 @@ router.post('/:id/cards', async (req, res) => {
       SELECT w.id as workspaceId FROM "List" l
       JOIN "Board" b ON l."boardId" = b.id
       JOIN "Workspace" w ON b."workspaceId" = w.id
-      WHERE l.id = $1 AND w."userId" = $2
-    `, [req.params.id, req.user.userId]);
+      WHERE l.id = $1
+    `, [req.params.id]);
 
     if (listCheck.rows.length === 0) {
       return res.status(404).json({ message: 'List not found' });

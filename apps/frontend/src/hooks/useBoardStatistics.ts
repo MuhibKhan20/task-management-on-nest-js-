@@ -30,7 +30,9 @@ const fetchBoardStatistics = async (boardId: string): Promise<BoardStatistics> =
     throw new Error('Failed to fetch board statistics');
   }
 
-  return response.json();
+  const data = await response.json();
+  console.log('Board statistics response:', data);
+  return data;
 };
 
 export const useBoardStatistics = (boardId: string) => {

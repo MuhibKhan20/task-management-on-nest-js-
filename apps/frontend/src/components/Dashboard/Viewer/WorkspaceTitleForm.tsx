@@ -61,8 +61,13 @@ const WorkspaceTitleForm = ({
     updateMutation.mutate(data);
   };
 
+  const handleFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleSubmit(onSubmit)(event);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleFormSubmit}>
       <Stack
         direction={'row'}
         spacing={1}

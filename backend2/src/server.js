@@ -16,7 +16,7 @@ const listRoutes = require('./routes/lists');
 const cardRoutes = require('./routes/cards');
 
 const app = express();
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4003;
 
 // Security middleware
 app.use(helmet());
@@ -36,17 +36,12 @@ const authLimiter = rateLimit({
   message: 'Too many authentication attempts'
 });
 
-// CORS configuration
+// CORS configuration - Allow all origins during development
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://task-manager-frontend.onrender.com',
-    'https://task-manager-frontend.vercel.app'
-  ],
+  origin: true, // Allow all origins during development
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept']
 }));
 
 // Body parsing middleware
