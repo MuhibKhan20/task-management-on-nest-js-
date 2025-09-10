@@ -20,16 +20,13 @@ services:
       - key: JWT_REFRESH_TOKEN_TTL
         value: 604800
 
-  # Frontend Web Service (Express serving React)
-  - type: web
+  # Frontend Static Site  
+  - type: static
     name: task-manager-frontend
-    env: node
     rootDir: apps/frontend
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    staticPublishPath: dist
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: VITE_API_URL
         value: https://task-management-on-nest-js.onrender.com/api
       - key: VITE_API_AUTH
