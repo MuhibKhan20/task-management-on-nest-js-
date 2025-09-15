@@ -129,7 +129,7 @@ const NavbarDrawer = ({
           )
         }
       >
-        <RoleBasedAccess allowedRoles={['ADMIN']}>
+        <RoleBasedAccess hiddenRoles={['USER']}>
           <Tooltip title="Add">
             <IconButton onClick={toggleModal}>
               <AddIcon />

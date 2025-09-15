@@ -38,14 +38,21 @@ const authLimiter = rateLimit({
   skip: (req) => req.method === 'OPTIONS' // Skip rate limiting for OPTIONS requests
 });
 
-// CORS configuration - Allow specific origins
+// CORS configuration - Allow all origins (including Netlify deployment)
 app.use(cors({
   origin: [
     'https://starlit-starship-51a1a6.netlify.app',
     'http://localhost:3000',
     'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+    'http://localhost:5176',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173'
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+    'http://127.0.0.1:5175',
+    'http://127.0.0.1:5176',
+    true // Allow all other origins as fallback
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -56,18 +63,8 @@ app.use(cors({
 // Explicit OPTIONS handler for all routes
 app.options('*', (req, res) => {
   const origin = req.headers.origin;
-  const allowedOrigins = [
-    'https://starlit-starship-51a1a6.netlify.app',
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173'
-  ];
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Credentials', 'true');
-  }
+  res.header('Access-Control-Allow-Origin', origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Accept, X-Requested-With');
   res.sendStatus(200);

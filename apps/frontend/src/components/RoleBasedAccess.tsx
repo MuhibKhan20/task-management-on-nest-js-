@@ -1,13 +1,15 @@
 import { useAuth } from '../context/AuthContextProvider';
 
 interface RoleBasedAccessProps {
-  allowedRoles: string[];
+  allowedRoles?: string[];
+  hiddenRoles?: string[];
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
 
 export const RoleBasedAccess: React.FC<RoleBasedAccessProps> = ({
   allowedRoles,
+  hiddenRoles,
   children,
   fallback = null
 }) => {
@@ -17,7 +19,18 @@ export const RoleBasedAccess: React.FC<RoleBasedAccessProps> = ({
     return fallback;
   }
 
-  const hasAccess = allowedRoles.includes(user.role);
+  let hasAccess = true;
+
+  // If allowedRoles is provided, check if user role is in allowed list
+  if (allowedRoles && allowedRoles.length > 0) {
+    hasAccess = allowedRoles.includes(user.role);
+  }
+
+  // If hiddenRoles is provided, check if user role is NOT in hidden list
+  if (hiddenRoles && hiddenRoles.length > 0) {
+    hasAccess = !hiddenRoles.includes(user.role);
+  }
+
 
   return hasAccess ? <>{children}</> : <>{fallback}</>;
 };

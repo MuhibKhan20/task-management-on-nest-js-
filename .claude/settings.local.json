@@ -29,7 +29,8 @@
       "Bash(BOARD_ID=\"937e5f8a-2c9d-4f29-8dec-8508cf2e6fcc\")",
       "Bash(npm run type-check:*)",
       "Bash(npm run lint)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

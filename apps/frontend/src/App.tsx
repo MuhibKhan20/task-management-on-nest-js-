@@ -3,6 +3,7 @@ import Routes from './Routes/Routes';
 import { ToastContainer } from 'react-toastify';
 import NotificationContainer from './components/Notifications/NotificationContainer';
 import { useDeadlineMonitor } from './hooks/useDeadlineMonitor';
+import Chatbot from './components/Chatbot/Chatbot';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,6 +16,7 @@ function App() {
         <Routes />
       </Box>
       <NotificationContainer />
+      <Chatbot />
       <ToastContainer
         position="bottom-right"
         autoClose={5000}

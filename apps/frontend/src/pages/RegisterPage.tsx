@@ -103,6 +103,9 @@ const RegisterPage = () => {
         if (body.error) {
           setError(true);
           setErrorText(body.error);
+        } else if (body.message) {
+          setError(true);
+          setErrorText(body.message);
         } else {
           setError(true);
           setErrorText('An unexpected error occurred');
@@ -110,7 +113,7 @@ const RegisterPage = () => {
       }
     } catch (error) {
       setError(true);
-      setErrorText('An unexpected error is occured');
+      setErrorText('An unexpected error occurred');
       setSubmitting(false);
     }
   };

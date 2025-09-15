@@ -1,12 +1,13 @@
 const express = require('express');
 const { query } = require('../config/database');
 const { hashPassword, comparePassword, generateToken, generateRefreshToken, verifyRefreshToken } = require('../utils/auth');
+const { validateRegistration, validateLogin } = require('../middleware/validation');
 const router = express.Router();
 
 // Register
-router.post('/register', async (req, res) => {
+router.post('/register', validateRegistration, async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
 
     // Check if user already exists
     const existingUser = await query('SELECT id FROM "User" WHERE email = $1', [email]);
@@ -17,10 +18,13 @@ router.post('/register', async (req, res) => {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
+    // Use provided role or default to USER
+    const userRole = role || 'USER';
+
     // Create user
     const result = await query(
       'INSERT INTO "User" (id, username, email, password, role, "createdAt", "updatedAt") VALUES (gen_random_uuid(), $1, $2, $3, $4, NOW(), NOW()) RETURNING id, username, email, role',
-      [username, email, hashedPassword, 'USER']
+      [username, email, hashedPassword, userRole]
     );
 
     const user = result.rows[0];
@@ -42,7 +46,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
 
