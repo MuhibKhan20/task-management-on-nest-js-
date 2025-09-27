@@ -4,6 +4,7 @@ import { TWorkspace } from '../../types/workspace.type';
 import BoardsViewer from './Viewer/BoardsViewer';
 import ActivitiesViewer from './Viewer/ActivitiesViewer';
 import WorkspaceTitleForm from './Viewer/WorkspaceTitleForm';
+import AssignedTasksViewer from './Viewer/AssignedTasksViewer';
 
 type ViwerProps = {
   selectedWorkspace: TWorkspace | undefined;
@@ -33,7 +34,7 @@ const Viewer = ({
       </Stack>
       <Divider />
       {selectedWorkspace === undefined ? (
-        <Typography variant="h6">Choose a Workspace</Typography>
+        <AssignedTasksViewer />
       ) : selectedWorkspaceMenuItem === 'boards' ? (
         <BoardsViewer selectedWorkspaceId={selectedWorkspace.id} />
       ) : (
