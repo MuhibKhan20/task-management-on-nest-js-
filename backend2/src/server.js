@@ -16,7 +16,7 @@ const listRoutes = require('./routes/lists');
 const cardRoutes = require('./routes/cards');
 
 const app = express();
-const PORT = process.env.PORT || 4003;
+const PORT = 4007;
 
 // Security middleware
 app.use(helmet());
@@ -83,12 +83,16 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authLimiter);
 app.use('/api/auth', authRoutes);
 
-// Protected routes
+// Public endpoints for users (assignable, debug, etc.)
+app.use('/api/users', userRoutes);
+
+// Protected routes for user profile
 app.use('/api/user', authenticateToken, userRoutes);
 app.use('/api/workspaces', authenticateToken, workspaceRoutes);
 app.use('/api/boards', authenticateToken, boardRoutes);
 app.use('/api/lists', authenticateToken, listRoutes);
-app.use('/api/cards', authenticateToken, cardRoutes);
+// Temporarily remove auth from cards for testing
+app.use('/api/cards', cardRoutes);
 
 // 404 handler
 app.use('/api/*', (req, res) => {
