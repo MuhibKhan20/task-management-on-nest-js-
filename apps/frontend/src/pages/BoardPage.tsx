@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import useQueryByItemId from '../hooks/useQueryByItemId';
-import { Box, CircularProgress, Container } from '@mui/material';
+import { Box, CircularProgress, Container, Typography } from '@mui/material';
 import { TBoard } from '../types/board.type';
 import BoardTitleForm from '../components/Board/BordTitleForm';
 import ListComponent from '../components/Board/ListComponent';

@@ -6,14 +6,7 @@ import {
   TextField,
   Typography,
   Fab,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Button,
   CircularProgress,
-  List,
-  ListItem,
-  ListItemText,
 } from '@mui/material';
 import { Chat, Send, Close } from '@mui/icons-material';
 import { createGroq } from '@ai-sdk/groq';
@@ -167,21 +160,21 @@ Please provide a helpful response:`;
     setMessages([]);
   };
 
-  const testConnection = async () => {
-    if (!isApiReady) {
-      alert('API not ready - check console for details');
-      return;
-    }
+  // const testConnection = async () => {
+  //   if (!isApiReady) {
+  //     alert('API not ready - check console for details');
+  //     return;
+  //   }
 
-    try {
-      console.log('Testing connection...');
-      const response = await getAIResponse('Hello, just testing the connection. Please respond with "Connection successful!"');
-      alert(`Test successful: ${response}`);
-    } catch (error: any) {
-      console.error('Test failed:', error);
-      alert(`Test failed: ${error?.message || error}`);
-    }
-  };
+  //   try {
+  //     console.log('Testing connection...');
+  //     const response = await getAIResponse('Hello, just testing the connection. Please respond with "Connection successful!"');
+  //     alert(`Test successful: ${response}`);
+  //   } catch (error: any) {
+  //     console.error('Test failed:', error);
+  //     alert(`Test failed: ${error?.message || error}`);
+  //   }
+  // };
 
   return (
     <>

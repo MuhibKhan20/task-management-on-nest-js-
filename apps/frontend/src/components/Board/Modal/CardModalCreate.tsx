@@ -271,7 +271,7 @@ const CardModalCreate = ({
                     onChange={(_, selectedUser) => {
                       onChange(selectedUser?.id || '');
                     }}
-                    renderOption={(props, option, { inputValue }) => (
+                    renderOption={(props, option) => (
                       <Box
                         component="li"
                         {...props}

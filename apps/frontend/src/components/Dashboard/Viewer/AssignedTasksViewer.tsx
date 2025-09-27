@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -33,9 +33,12 @@ const AssignedTasksViewer = () => {
       return response.json();
     },
     enabled: !!user?.userId && !!accessToken, // Only run if user is logged in
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    retry: 3,
-    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutes - keep data fresh longer
+    gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
+    retry: 1, // Fast fail - only retry once
+    retryDelay: 500, // Quick retry
+    refetchOnWindowFocus: true, // Refresh when user comes back
+    refetchOnMount: false, // Don't refetch if data is fresh
   });
 
   const getPriorityColor = (priority: string) => {
