@@ -14,17 +14,25 @@ import { TAssignedTask } from '../../../types/card.type';
 import { format } from 'date-fns';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { useAuth } from '../../../context/AuthContextProvider';
 
 const AssignedTasksViewer = () => {
+  const { user, accessToken } = useAuth();
+
   const { data: assignedTasks, isPending, error } = useQuery<TAssignedTask[]>({
-    queryKey: ['assigned-tasks'],
+    queryKey: ['assigned-tasks', user?.userId],
     queryFn: async () => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/assigned-tasks`);
+      if (!user?.userId) {
+        throw new Error('No user ID available');
+      }
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/assigned-tasks/${user.userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch assigned tasks');
       }
       return response.json();
     },
+    enabled: !!user?.userId && !!accessToken, // Only run if user is logged in
     staleTime: 2 * 60 * 1000, // 2 minutes
     retry: 3,
     retryDelay: 1000,
@@ -52,8 +60,8 @@ const AssignedTasksViewer = () => {
     return new Date(deadline) < new Date();
   };
 
-  // Show login message if no user ID
-  if (!currentUserId) {
+  // Show login message if no user
+  if (!accessToken || !user) {
     return (
       <Box display="flex" flexDirection="column" alignItems="center" p={4}>
         <AssignmentIcon sx={{ fontSize: 48, color: 'warning.main', mb: 2 }} />
@@ -62,6 +70,22 @@ const AssignedTasksViewer = () => {
         </Typography>
         <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 1 }}>
           You need to be logged in to see tasks assigned specifically to you.
+        </Typography>
+      </Box>
+    );
+  }
+
+  // Show admin welcome message
+  if (user.role === 'ADMIN') {
+    return (
+      <Box display="flex" flexDirection="column" alignItems="center" p={4}>
+        <AdminPanelSettingsIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+        <Typography variant="h6" color="primary.main">
+          Welcome, Administrator!
+        </Typography>
+        <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 1 }}>
+          As an admin, you can manage the system but don't have personal task assignments.
+          Use the board view to oversee all projects and tasks.
         </Typography>
       </Box>
     );
