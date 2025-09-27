@@ -16,71 +16,15 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 const AssignedTasksViewer = () => {
-  // Get current user's ID from localStorage
-  const getCurrentUserId = () => {
-    try {
-      // Check multiple possible token keys
-      const possibleKeys = ['accessToken', 'access_token', 'token', 'authToken'];
-      let token = null;
-      let tokenKey = null;
-
-      for (const key of possibleKeys) {
-        const storedToken = localStorage.getItem(key);
-        if (storedToken) {
-          token = storedToken;
-          tokenKey = key;
-          break;
-        }
-      }
-
-      console.log('All localStorage keys:', Object.keys(localStorage));
-      console.log(`Token found under key "${tokenKey}":`, token ? 'YES' : 'NO');
-
-      if (!token) {
-        console.warn('No access token found in localStorage with any of these keys:', possibleKeys);
-        return null;
-      }
-
-      // Parse JWT token
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        console.error('Invalid JWT token format - expected 3 parts, got:', parts.length);
-        return null;
-      }
-
-      const payload = JSON.parse(atob(parts[1]));
-      console.log('JWT payload:', payload);
-
-      const userId = payload.sub || payload.userId || payload.id;
-
-      if (!userId) {
-        console.warn('No user ID found in JWT token payload:', payload);
-        return null;
-      }
-
-      console.log('Current user ID from JWT:', userId);
-      return userId;
-    } catch (error) {
-      console.error('Error parsing JWT token:', error);
-      return null;
-    }
-  };
-
-  const currentUserId = getCurrentUserId();
-
   const { data: assignedTasks, isPending, error } = useQuery<TAssignedTask[]>({
-    queryKey: ['assigned-tasks', currentUserId],
+    queryKey: ['assigned-tasks'],
     queryFn: async () => {
-      if (!currentUserId) {
-        throw new Error('No user ID available - please log in');
-      }
-      const response = await fetch(`/api/users/assigned-tasks/${currentUserId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/assigned-tasks`);
       if (!response.ok) {
         throw new Error('Failed to fetch assigned tasks');
       }
       return response.json();
     },
-    enabled: !!currentUserId, // Only run query if we have a user ID
     staleTime: 2 * 60 * 1000, // 2 minutes
     retry: 3,
     retryDelay: 1000,

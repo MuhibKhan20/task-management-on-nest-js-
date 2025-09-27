@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
 // Update card
 router.patch('/:id', async (req, res) => {
   try {
-    const { title, description, priority, status, deadline } = req.body;
+    const { title, description, priority, status, deadline, assignedUserId } = req.body;
 
     let updateFields = [];
     let values = [];
@@ -58,6 +58,23 @@ router.patch('/:id', async (req, res) => {
       values.push(deadline);
     }
 
+    // Handle assignedUserId update (can be set to null to unassign)
+    if (assignedUserId !== undefined) {
+      if (assignedUserId !== null) {
+        // Verify the user exists and has USER role
+        const userCheck = await query(
+          'SELECT id FROM "User" WHERE id = $1 AND role = $2',
+          [assignedUserId, 'USER']
+        );
+
+        if (userCheck.rows.length === 0) {
+          return res.status(400).json({ message: 'Invalid user assignment. User must exist and have USER role.' });
+        }
+      }
+      updateFields.push(`"assignedUserId" = $${paramCounter++}`);
+      values.push(assignedUserId);
+    }
+
     if (updateFields.length === 0) {
       return res.status(400).json({ message: 'No fields to update' });
     }
@@ -66,9 +83,9 @@ router.patch('/:id', async (req, res) => {
     values.push(req.params.id);
 
     const updateQuery = `
-      UPDATE "Card" 
-      SET ${updateFields.join(', ')} 
-      WHERE id = $${paramCounter} 
+      UPDATE "Card"
+      SET ${updateFields.join(', ')}
+      WHERE id = $${paramCounter}
       RETURNING *
     `;
 

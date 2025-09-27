@@ -8,6 +8,11 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ message: 'Access token required' });
   }
 
+  // Debug logging
+  console.log('Raw auth header:', authHeader);
+  console.log('Extracted token:', token);
+  console.log('Token length:', token ? token.length : 'null');
+
   try {
     const decoded = verifyToken(token);
     req.user = {

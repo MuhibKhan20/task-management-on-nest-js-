@@ -133,7 +133,7 @@ router.get('/:id/cards', async (req, res) => {
 // Create card in list
 router.post('/:id/cards', async (req, res) => {
   try {
-    const { title, description, priority, deadline } = req.body;
+    const { title, description, priority, deadline, assignedUserId } = req.body;
 
     if (!title || !description || !priority) {
       return res.status(400).json({ message: 'Title, description, and priority are required' });
@@ -151,15 +151,35 @@ router.post('/:id/cards', async (req, res) => {
       return res.status(404).json({ message: 'List not found' });
     }
 
+    // If assignedUserId is provided, verify the user exists and has USER role
+    if (assignedUserId) {
+      const userCheck = await query(
+        'SELECT id FROM "User" WHERE id = $1 AND role = $2',
+        [assignedUserId, 'USER']
+      );
+
+      if (userCheck.rows.length === 0) {
+        return res.status(400).json({ message: 'Invalid user assignment. User must exist and have USER role.' });
+      }
+    }
+
     const result = await query(
-      'INSERT INTO "Card" (id, title, description, priority, status, deadline, "listId", "createdAt", "updatedAt") VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING *',
-      [title, description, priority, 'TODO', deadline || null, req.params.id]
+      'INSERT INTO "Card" (id, title, description, priority, status, deadline, "assignedUserId", "listId", "createdAt", "updatedAt") VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *',
+      [title, description, priority, 'TODO', deadline || null, assignedUserId || null, req.params.id]
     );
 
     // Log activity
+    let activityTitle = `Created card "${title}"`;
+    if (assignedUserId) {
+      const assignedUser = await query('SELECT username FROM "User" WHERE id = $1', [assignedUserId]);
+      if (assignedUser.rows.length > 0) {
+        activityTitle += ` assigned to ${assignedUser.rows[0].username}`;
+      }
+    }
+
     await query(
       'INSERT INTO "Activity" (id, title, "workspaceId", "createdAt") VALUES (gen_random_uuid(), $1, $2, NOW())',
-      [`Created card "${title}"`, listCheck.rows[0].workspaceid]
+      [activityTitle, listCheck.rows[0].workspaceid]
     );
 
     res.status(201).json(result.rows[0]);

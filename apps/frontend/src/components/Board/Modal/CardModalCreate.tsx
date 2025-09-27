@@ -51,7 +51,7 @@ const CardModalCreate = ({
   const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery<TUser[]>({
     queryKey: ['assignable-users'],
     queryFn: async () => {
-      const response = await fetch('/api/users/assignable');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/assignable`);
       if (!response.ok) {
         throw new Error(`Failed to fetch users: ${response.status} ${response.statusText}`);
       }
