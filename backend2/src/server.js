@@ -16,7 +16,7 @@ const listRoutes = require('./routes/lists');
 const cardRoutes = require('./routes/cards');
 
 const app = express();
-const PORT = 4007;
+const PORT = process.env.PORT || 4007;
 
 // Security middleware
 app.use(helmet());
